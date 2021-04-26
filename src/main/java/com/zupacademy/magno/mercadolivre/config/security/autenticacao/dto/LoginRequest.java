@@ -28,7 +28,7 @@ public class LoginRequest {
         return senha;
     }
 
-    public UsernamePasswordAuthenticationToken converter() {
+    public UsernamePasswordAuthenticationToken gerarDadosParaToken() {
         return new UsernamePasswordAuthenticationToken(this.login, this.senha);
     }
 }

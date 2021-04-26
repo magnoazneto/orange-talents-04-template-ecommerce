@@ -26,7 +26,7 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity<TokenDto> autenticar(@RequestBody @Valid LoginRequest request){
-        UsernamePasswordAuthenticationToken dadosLogin = request.converter();
+        UsernamePasswordAuthenticationToken dadosLogin = request.gerarDadosParaToken();
 
         Authentication auth = authManager.authenticate(dadosLogin);
         String token = tokenService.gerarToken(auth);
