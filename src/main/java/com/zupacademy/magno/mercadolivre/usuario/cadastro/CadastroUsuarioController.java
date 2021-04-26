@@ -1,6 +1,8 @@
 package com.zupacademy.magno.mercadolivre.usuario.cadastro;
 
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
+import com.zupacademy.magno.mercadolivre.usuario.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,14 +18,14 @@ import javax.validation.Valid;
 @RequestMapping("/usuario")
 public class CadastroUsuarioController {
 
-   @PersistenceContext
-    EntityManager manager;
+    @Autowired
+    UsuarioRepository usuarioRepo;
 
     @PostMapping
     @Transactional
     public ResponseEntity<?> criaUsuario(@RequestBody @Valid CadastroUsuarioRequest request){
         Usuario novoUsuario = request.toModel();
-        manager.persist(novoUsuario);
+        usuarioRepo.save(novoUsuario);
         return ResponseEntity.ok().build();
     }
 }

@@ -2,6 +2,8 @@ package com.zupacademy.magno.mercadolivre.usuario;
 
 import com.zupacademy.magno.mercadolivre.usuario.cadastro.SenhaLimpa;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -9,17 +11,31 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank @Email @Column(unique = true)
-    private final String login;
+    private String login;
     @NotBlank @Length(min = 6)
-    private final String senha;
-    private final LocalDateTime instanteCriacao;
+    private String senha;
+    private LocalDateTime instanteCriacao;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Perfil> perfis = new ArrayList<>();
+
+    /**
+     * apenas para uso da JPA
+     */
+    @Deprecated
+    public Usuario(){
+
+    }
 
     /**
      *
@@ -50,5 +66,40 @@ public class Usuario {
 
     public LocalDateTime getInstanteCriacao() {
         return instanteCriacao;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.perfis;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
