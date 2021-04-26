@@ -1,7 +1,7 @@
-package com.zupacademy.magno.mercadolivre.config.security.autenticacao;
+package com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao;
 
-import com.zupacademy.magno.mercadolivre.config.security.autenticacao.dto.LoginRequest;
-import com.zupacademy.magno.mercadolivre.config.security.autenticacao.dto.TokenDto;
+import com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao.dto.LoginRequest;
+import com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao.dto.TokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

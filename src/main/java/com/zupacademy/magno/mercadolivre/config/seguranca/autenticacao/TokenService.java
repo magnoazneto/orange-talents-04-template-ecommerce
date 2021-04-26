@@ -1,4 +1,4 @@
-package com.zupacademy.magno.mercadolivre.config.security.autenticacao;
+package com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao;
 
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import com.zupacademy.magno.mercadolivre.usuario.UsuarioRepository;

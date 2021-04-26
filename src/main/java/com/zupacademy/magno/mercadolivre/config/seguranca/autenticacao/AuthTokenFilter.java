@@ -1,4 +1,4 @@
-package com.zupacademy.magno.mercadolivre.config.security.autenticacao;
+package com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao;
 
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String token = recuperarToken(request);
-        boolean valido = tokenService.isTokenValido(token);
-        if(valido){
+        if(tokenService.isTokenValido(token)){
             autenticarCliente(token);
         }
 

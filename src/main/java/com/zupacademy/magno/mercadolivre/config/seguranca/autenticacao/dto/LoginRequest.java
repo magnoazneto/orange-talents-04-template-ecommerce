@@ -1,4 +1,4 @@
-package com.zupacademy.magno.mercadolivre.config.security.autenticacao.dto;
+package com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao.dto;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

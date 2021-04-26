@@ -1,8 +1,8 @@
-package com.zupacademy.magno.mercadolivre.config.security;
+package com.zupacademy.magno.mercadolivre.config.seguranca;
 
-import com.zupacademy.magno.mercadolivre.config.security.autenticacao.AuthService;
-import com.zupacademy.magno.mercadolivre.config.security.autenticacao.AuthTokenFilter;
-import com.zupacademy.magno.mercadolivre.config.security.autenticacao.TokenService;
+import com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao.AuthService;
+import com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao.AuthTokenFilter;
+import com.zupacademy.magno.mercadolivre.config.seguranca.autenticacao.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
