@@ -1,4 +1,4 @@
-package com.zupacademy.magno.mercadolivre.config.errors;
+package com.zupacademy.magno.mercadolivre.utils.errors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

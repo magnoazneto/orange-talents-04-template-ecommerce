@@ -1,4 +1,4 @@
-package com.zupacademy.magno.mercadolivre.config.errors;
+package com.zupacademy.magno.mercadolivre.utils.errors;
 
 public class ErrorsDetailsDto {
     private final String reason;
