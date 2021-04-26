@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "USUARIO")
 public class Usuario {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
