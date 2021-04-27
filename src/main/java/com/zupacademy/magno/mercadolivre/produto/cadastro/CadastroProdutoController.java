@@ -1,7 +1,6 @@
 package com.zupacademy.magno.mercadolivre.produto.cadastro;
 
 import com.zupacademy.magno.mercadolivre.produto.Produto;
-import com.zupacademy.magno.mercadolivre.produto.ProdutoRequest;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +19,7 @@ public class CadastroProdutoController {
     @PersistenceContext
     EntityManager manager;
 
-    @InitBinder
+    @InitBinder(value = "produtoRequest")
     public void init(WebDataBinder webDataBinder){
         webDataBinder.addValidators(new ProibeCaracteristicasComNomeIgualValidator());
     }
@@ -31,5 +30,10 @@ public class CadastroProdutoController {
         Produto novoProduto = request.toModel(manager, usuario);
         manager.persist(novoProduto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/{id}/imagens")
+    public String adicionaImagens(@Valid ImagensRequest request, @PathVariable("id") Long id){
+        return "criando imagem...";
     }
 }
