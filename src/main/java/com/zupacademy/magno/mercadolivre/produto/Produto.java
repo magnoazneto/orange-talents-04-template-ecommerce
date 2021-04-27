@@ -2,7 +2,7 @@ package com.zupacademy.magno.mercadolivre.produto;
 
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProduto;
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
-import com.zupacademy.magno.mercadolivre.utils.validations.ExistsValue;
+import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -28,32 +28,37 @@ public class Produto {
     private Categoria categoria;
     @NotNull @Size(min = 3) @OneToMany
     private Set<CaracteristicaProduto> caracteristicas;
+    @NotNull @ManyToOne
+    private Usuario usuarioCriador;
 
     /**
-     * construtor padrao
+     * Construtor que deve ser usado como padrão
      * @param nome
      * @param valor
      * @param quantidade
      * @param descricao
      * @param categoria categoria cadastrada no sistema
      * @param caracteristicas caracteristicas cadastradas no sistema
+     * @param usuarioCriador usuario logado que enviou a requisicao
      */
     public Produto(String nome,
                    BigDecimal valor,
                    Integer quantidade,
                    String descricao,
                    Categoria categoria,
-                   Set<CaracteristicaProduto> caracteristicas) {
+                   Set<CaracteristicaProduto> caracteristicas,
+                   Usuario usuarioCriador) {
         this.nome = nome;
         this.valor = valor;
         this.quantidade = quantidade;
         this.descricao = descricao;
         this.categoria = categoria;
         this.caracteristicas = caracteristicas;
+        this.usuarioCriador = usuarioCriador;
     }
 
     /**
-     * para uso da JPA
+     * para uso exclusivo da JPA
      */
     @Deprecated
     public Produto(){
@@ -88,6 +93,10 @@ public class Produto {
         return caracteristicas;
     }
 
+    public Usuario getUsuarioCriador() {
+        return usuarioCriador;
+    }
+
     @Override
     public String toString() {
         return "Produto{" +
@@ -98,6 +107,7 @@ public class Produto {
                 ", descricao='" + descricao + '\'' +
                 ", categoria=" + categoria +
                 ", caracteristicas=" + caracteristicas +
+                ", usuarioCriador=" + usuarioCriador +
                 '}';
     }
 }

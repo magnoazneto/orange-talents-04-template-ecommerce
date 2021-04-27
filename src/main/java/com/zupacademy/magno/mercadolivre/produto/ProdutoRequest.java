@@ -3,6 +3,7 @@ package com.zupacademy.magno.mercadolivre.produto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProduto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProdutoRequest;
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
+import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import com.zupacademy.magno.mercadolivre.utils.validations.ExistsValue;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
@@ -12,7 +13,6 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ProdutoRequest {
 
@@ -43,9 +43,12 @@ public class ProdutoRequest {
         this.caracteristicas = caracteristicas;
     }
 
-    public Produto toModel(EntityManager manager){
+    public Produto toModel(EntityManager manager, Usuario usuario){
         Categoria categoria = manager.find(Categoria.class, categoriaId);
         Assert.notNull(categoria, "Categoria não deveria ser nula");
+
+        Usuario usuarioLogado = manager.find(Usuario.class, usuario.getId());
+        Assert.notNull(usuarioLogado, "Usuário logado não foi encontrado");
 
         Set<CaracteristicaProduto> caracteristicasSalvas = salvarCaracteristicas(manager);
 
@@ -54,7 +57,8 @@ public class ProdutoRequest {
                 this.quantidade,
                 this.descricao,
                 categoria,
-                caracteristicasSalvas
+                caracteristicasSalvas,
+                usuarioLogado
                 );
     }
 
@@ -68,7 +72,6 @@ public class ProdutoRequest {
         });
 
         return caracteristicasSalvas;
-
     }
 
     public String getNome() {

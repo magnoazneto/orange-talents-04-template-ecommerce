@@ -15,6 +15,14 @@ public class CaracteristicaProduto {
     private String nome;
     private String descricao;
 
+    /**
+     * para uso do hibernate
+     */
+    @Deprecated
+    public CaracteristicaProduto(){
+
+    }
+
     public CaracteristicaProduto(@NotBlank String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;

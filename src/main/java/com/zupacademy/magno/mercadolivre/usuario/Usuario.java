@@ -102,4 +102,13 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", perfis=" + perfis +
+                '}';
+    }
 }
