@@ -1,14 +1,18 @@
 package com.zupacademy.magno.mercadolivre.produto;
 
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProduto;
+import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProdutoRequest;
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
+import io.jsonwebtoken.lang.Assert;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Produto {
@@ -26,8 +30,8 @@ public class Produto {
     private String descricao;
     @NotNull @ManyToOne
     private Categoria categoria;
-    @NotNull @Size(min = 3) @OneToMany
-    private Set<CaracteristicaProduto> caracteristicas;
+    @NotNull @Size(min = 3) @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
+    private Set<CaracteristicaProduto> caracteristicas = new HashSet<>();
     @NotNull @ManyToOne
     private Usuario usuarioCriador;
 
@@ -46,15 +50,17 @@ public class Produto {
                    Integer quantidade,
                    String descricao,
                    Categoria categoria,
-                   Set<CaracteristicaProduto> caracteristicas,
+                   @NotNull @Size(min = 3) Set<CaracteristicaProdutoRequest> caracteristicas,
                    Usuario usuarioCriador) {
         this.nome = nome;
         this.valor = valor;
         this.quantidade = quantidade;
         this.descricao = descricao;
         this.categoria = categoria;
-        this.caracteristicas = caracteristicas;
         this.usuarioCriador = usuarioCriador;
+        this.caracteristicas.addAll(caracteristicas.stream().map(c -> c.toModel(this)).collect(Collectors.toSet()));
+
+        Assert.isTrue(this.caracteristicas.size() >= 3, "Todo produto precisa ter no minimo 3 caracteristicas.");
     }
 
     /**

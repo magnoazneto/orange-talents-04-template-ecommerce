@@ -50,29 +50,31 @@ public class ProdutoRequest {
         Usuario usuarioLogado = manager.find(Usuario.class, usuario.getId());
         Assert.notNull(usuarioLogado, "Usuário logado não foi encontrado");
 
-        Set<CaracteristicaProduto> caracteristicasSalvas = salvarCaracteristicas(manager);
+        //Set<CaracteristicaProduto> caracteristicasSalvas = salvarCaracteristicas(manager);
 
         return new Produto(this.nome,
                 this.valor,
                 this.quantidade,
                 this.descricao,
                 categoria,
-                caracteristicasSalvas,
+                caracteristicas,
                 usuarioLogado
                 );
     }
 
-    private Set<CaracteristicaProduto> salvarCaracteristicas(EntityManager manager){
-        Set<CaracteristicaProduto> caracteristicasSalvas = new HashSet<>();
-
-        caracteristicas.forEach(c -> {
-            CaracteristicaProduto novaCaracteristica = c.toModel();
-            manager.persist(novaCaracteristica);
-            caracteristicasSalvas.add(novaCaracteristica);
-        });
-
-        return caracteristicasSalvas;
+    public Set<String> buscarCategoriasComNomeIgual(){
+        Set<String> nomesIguais = new HashSet<>();
+        Set<String> resultados = new HashSet<>();
+        for (CaracteristicaProdutoRequest c : caracteristicas) {
+            String nome = c.getNome();
+            if (!nomesIguais.add(nome)) {
+                resultados.add(nome);
+            }
+        }
+        return resultados;
     }
+
+
 
     public String getNome() {
         return nome;

@@ -5,10 +5,8 @@ import com.zupacademy.magno.mercadolivre.produto.ProdutoRequest;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +19,11 @@ public class CadastroProdutoController {
 
     @PersistenceContext
     EntityManager manager;
+
+    @InitBinder
+    public void init(WebDataBinder webDataBinder){
+        webDataBinder.addValidators(new ProibeCaracteristicasComNomeIgualValidator());
+    }
 
     @PostMapping
     @Transactional

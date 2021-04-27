@@ -1,10 +1,11 @@
 package com.zupacademy.magno.mercadolivre.caracteristica;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.zupacademy.magno.mercadolivre.produto.Produto;
+
+import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class CaracteristicaProduto {
@@ -14,6 +15,8 @@ public class CaracteristicaProduto {
     @NotBlank
     private String nome;
     private String descricao;
+    @ManyToOne
+    private @NotNull @Valid Produto produto;
 
     /**
      * para uso do hibernate
@@ -23,9 +26,12 @@ public class CaracteristicaProduto {
 
     }
 
-    public CaracteristicaProduto(@NotBlank String nome, String descricao) {
+    public CaracteristicaProduto(@NotBlank String nome,
+                                 String descricao,
+                                 @NotNull @Valid Produto produto) {
         this.nome = nome;
         this.descricao = descricao;
+        this.produto = produto;
     }
 
     public String getNome() {
@@ -36,12 +42,21 @@ public class CaracteristicaProduto {
         return descricao;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
     @Override
     public String toString() {
-        return "Caracteristica{" +
+        return "CaracteristicaProduto{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
+                ", produto=" + produto +
                 '}';
     }
 }
