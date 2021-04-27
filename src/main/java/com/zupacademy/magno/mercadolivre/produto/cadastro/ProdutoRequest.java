@@ -1,8 +1,9 @@
-package com.zupacademy.magno.mercadolivre.produto;
+package com.zupacademy.magno.mercadolivre.produto.cadastro;
 
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProduto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProdutoRequest;
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
+import com.zupacademy.magno.mercadolivre.produto.Produto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import com.zupacademy.magno.mercadolivre.utils.validations.ExistsValue;
 import org.hibernate.validator.constraints.Length;
@@ -49,8 +50,6 @@ public class ProdutoRequest {
 
         Usuario usuarioLogado = manager.find(Usuario.class, usuario.getId());
         Assert.notNull(usuarioLogado, "Usuário logado não foi encontrado");
-
-        //Set<CaracteristicaProduto> caracteristicasSalvas = salvarCaracteristicas(manager);
 
         return new Produto(this.nome,
                 this.valor,

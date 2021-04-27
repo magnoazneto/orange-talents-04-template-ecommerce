@@ -1,6 +1,5 @@
 package com.zupacademy.magno.mercadolivre.produto.cadastro;
 
-import com.zupacademy.magno.mercadolivre.produto.ProdutoRequest;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
