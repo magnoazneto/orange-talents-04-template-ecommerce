@@ -56,7 +56,6 @@ public class CaracteristicaProduto {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
-                ", produto=" + produto +
                 '}';
     }
 }

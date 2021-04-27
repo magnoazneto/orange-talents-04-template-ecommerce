@@ -1,4 +1,4 @@
-package com.zupacademy.magno.mercadolivre.produto.cadastro;
+package com.zupacademy.magno.mercadolivre.produto.cadastro.imagens;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,5 +14,9 @@ public class ImagensRequest {
 
     public ImagensRequest(List<MultipartFile> imagens) {
         this.imagens = imagens;
+    }
+
+    public List<MultipartFile> getImagens() {
+        return imagens;
     }
 }

@@ -3,6 +3,7 @@ package com.zupacademy.magno.mercadolivre.produto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProduto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProdutoRequest;
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
+import com.zupacademy.magno.mercadolivre.produto.cadastro.imagens.ImagemProduto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import io.jsonwebtoken.lang.Assert;
 import org.hibernate.validator.constraints.Length;
@@ -34,6 +35,8 @@ public class Produto {
     private Set<CaracteristicaProduto> caracteristicas = new HashSet<>();
     @NotNull @ManyToOne
     private Usuario usuarioCriador;
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private Set<ImagemProduto> imagens = new HashSet<>();
 
     /**
      * Construtor que deve ser usado como padrão
@@ -69,6 +72,11 @@ public class Produto {
     @Deprecated
     public Produto(){
 
+    }
+
+    public void associaLinks(Set<String> links) {
+        Set<ImagemProduto> imagens = links.stream().map(l -> new ImagemProduto(this, l)).collect(Collectors.toSet());
+        this.imagens.addAll(imagens);
     }
 
     public Long getId() {
@@ -114,6 +122,7 @@ public class Produto {
                 ", categoria=" + categoria +
                 ", caracteristicas=" + caracteristicas +
                 ", usuarioCriador=" + usuarioCriador +
+                ", imagens=" + imagens +
                 '}';
     }
 }
