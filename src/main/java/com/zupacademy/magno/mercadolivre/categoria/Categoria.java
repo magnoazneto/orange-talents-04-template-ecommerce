@@ -8,7 +8,7 @@ public class Categoria {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @NotBlank @Column(unique = true)
     private String nome;
     @ManyToOne
     private Categoria categoriaMae;
@@ -38,5 +38,14 @@ public class Categoria {
 
     public void setCategoriaMae(Categoria categoriaMae) {
         this.categoriaMae = categoriaMae;
+    }
+
+    @Override
+    public String toString() {
+        return "Categoria{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", categoriaMae=" + categoriaMae +
+                '}';
     }
 }
