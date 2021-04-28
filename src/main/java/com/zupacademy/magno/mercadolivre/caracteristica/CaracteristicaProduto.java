@@ -12,7 +12,7 @@ public class CaracteristicaProduto {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @NotBlank @Column(unique = true)
     private String nome;
     private String descricao;
     @ManyToOne
