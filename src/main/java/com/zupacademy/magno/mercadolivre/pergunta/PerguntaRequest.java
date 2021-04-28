@@ -12,27 +12,25 @@ public class PerguntaRequest {
 
     @NotBlank
     private String titulo;
-    @NotNull @ExistsValue(targetClass = Produto.class, fieldName = "id", message = "Produto não existente para esse ID.")
-    private Long produtoId;
 
-    public PerguntaRequest(@NotBlank String titulo, @NotNull Long produtoId) {
+
+    @Deprecated
+    public PerguntaRequest() {
+    }
+
+    public PerguntaRequest(@NotBlank String titulo) {
         this.titulo = titulo;
-        this.produtoId = produtoId;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
-    public Long getProdutoId() {
-        return produtoId;
-    }
 
     @Override
     public String toString() {
         return "PerguntaRequest{" +
                 "titulo='" + titulo + '\'' +
-                ", produtoId=" + produtoId +
                 '}';
     }
 

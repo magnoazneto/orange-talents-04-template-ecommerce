@@ -18,7 +18,7 @@ class PerguntaRequestTest {
 
     @BeforeEach
     public void initSetup(){
-        request = new PerguntaRequest("Qual a RAM?", 1L);
+        request = new PerguntaRequest("Qual a RAM?");
         usuarioCriador = mock(Usuario.class);
         produtoAlvo = mock(Produto.class);
     }

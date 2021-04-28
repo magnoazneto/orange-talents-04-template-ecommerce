@@ -2,22 +2,21 @@ package com.zupacademy.magno.mercadolivre.pergunta;
 
 import com.zupacademy.magno.mercadolivre.produto.Produto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
+import com.zupacademy.magno.mercadolivre.utils.validations.ExistsValue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/produto/pergunta")
+@RequestMapping
+@Validated
 public class PerguntaController {
 
     @Autowired
@@ -26,10 +25,12 @@ public class PerguntaController {
     @Autowired
     EnviadorEmail enviadorEmail;
 
-    @PostMapping
+    @PostMapping(value = "/produto/{id}/pergunta")
     @Transactional
-    public ResponseEntity<?> criaPergunta(@RequestBody @Valid PerguntaRequest request, @AuthenticationPrincipal Usuario criadorPergunta){
-        Produto produtoAlvo = manager.find(Produto.class, request.getProdutoId());
+    public ResponseEntity<?> criaPergunta(@RequestBody @Valid PerguntaRequest request,
+                                          @PathVariable @ExistsValue(fieldName = "id", targetClass = Produto.class, message = "Produto não existente para esse Id.") Long id,
+                                          @AuthenticationPrincipal Usuario criadorPergunta){
+        Produto produtoAlvo = manager.find(Produto.class, id);
         Pergunta novaPergunta = request.toModel(criadorPergunta, produtoAlvo);
 
         manager.persist(novaPergunta);

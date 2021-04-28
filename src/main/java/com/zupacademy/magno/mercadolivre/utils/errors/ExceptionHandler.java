@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RestControllerAdvice
 public class ExceptionHandler {
@@ -46,5 +49,19 @@ public class ExceptionHandler {
     public ResponseEntity<ErrorsDetailsDto> handle(ResponseStatusException exception){
         return ResponseEntity.status(exception.getStatus())
                 .body(new ErrorsDetailsDto(exception.getReason()));
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
+    public List<ErrorsDetailsDto> handle(ConstraintViolationException exception){
+        List<ErrorsDetailsDto> dto = new ArrayList<>();
+        Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
+
+        violations.forEach(e -> {
+            ErrorsDetailsDto error = new ErrorsDetailsDto(e.getInvalidValue().toString(), e.getMessage());
+            dto.add(error);
+        });
+
+        return dto;
     }
 }
