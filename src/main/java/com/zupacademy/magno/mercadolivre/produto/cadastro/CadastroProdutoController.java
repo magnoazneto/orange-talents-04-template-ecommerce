@@ -5,8 +5,10 @@ import com.zupacademy.magno.mercadolivre.produto.cadastro.imagens.ImagensRequest
 import com.zupacademy.magno.mercadolivre.produto.cadastro.imagens.UploaderFalso;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -41,12 +44,20 @@ public class CadastroProdutoController {
 
     @PostMapping(value = "/{id}/imagens")
     @Transactional
-    public String adicionaImagens(@Valid ImagensRequest request, @PathVariable("id") Long id){
+    public ResponseEntity<?> adicionaImagens(@Valid ImagensRequest request, @PathVariable("id") Long id, @AuthenticationPrincipal Usuario usuarioLogado){
         Set<String> links = uploaderFalso.envia(request.getImagens());
         Produto produto = manager.find(Produto.class, id);
+
+        if(produto == null){
+            return ResponseEntity.notFound().build();
+        }
+        if(!usuarioLogado.getId().equals(produto.getUsuarioCriador().getId())){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         produto.associaLinks(links);
         manager.merge(produto);
 
-        return produto.toString();
+        return ResponseEntity.ok(produto.toString());
     }
 }
