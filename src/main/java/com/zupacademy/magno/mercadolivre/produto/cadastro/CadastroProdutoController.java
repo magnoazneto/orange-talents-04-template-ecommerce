@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,7 +16,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -51,8 +49,8 @@ public class CadastroProdutoController {
 
         if(produto == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado no sistema.");
 
-        if(!usuarioLogado.getId().equals(produto.getUsuarioCriador().getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário diferente do usuário dono do produto.");
+        if(usuarioLogado.getId().equals(produto.getUsuarioCriador().getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não pode emitir Opinião para um produto criado por ele mesmo.");
         }
 
         produto.associaLinks(links);
