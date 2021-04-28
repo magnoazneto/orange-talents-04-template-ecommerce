@@ -2,6 +2,7 @@ package com.zupacademy.magno.mercadolivre.opiniao;
 
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +22,9 @@ public class OpiniaoController {
 
     @PostMapping
     @Transactional
-    public String criaOpiniao(@RequestBody @Valid OpiniaoRequest request, @AuthenticationPrincipal Usuario usuarioOpinador){
+    public ResponseEntity<OpiniaoResponse> criaOpiniao(@RequestBody @Valid OpiniaoRequest request, @AuthenticationPrincipal Usuario usuarioOpinador){
         Opiniao opiniao = request.toModel(manager, usuarioOpinador);
-        return request.toString();
+        manager.persist(opiniao);
+        return ResponseEntity.ok().body(new OpiniaoResponse(opiniao));
     }
 }

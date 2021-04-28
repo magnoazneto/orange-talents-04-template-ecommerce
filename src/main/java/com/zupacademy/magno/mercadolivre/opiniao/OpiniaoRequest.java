@@ -32,6 +32,7 @@ public class OpiniaoRequest {
     public Opiniao toModel(EntityManager manager, Usuario usuarioOpinador) {
         Produto produto = manager.find(Produto.class, produtoId);
         Assert.notNull(produto, "o Produto não deveria ser nulo.");
+        Assert.notNull(usuarioOpinador, "O usuário opinador não deveria ser nulo.");
 
         return new Opiniao(this.titulo,
                 this.descricao,
