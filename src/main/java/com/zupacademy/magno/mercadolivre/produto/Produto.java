@@ -45,7 +45,7 @@ public class Produto {
      * @param quantidade
      * @param descricao
      * @param categoria categoria cadastrada no sistema
-     * @param caracteristicas caracteristicas cadastradas no sistema
+     * @param caracteristicas caracteristicas a serem cadastradas no sistema com o produto
      * @param usuarioCriador usuario logado que enviou a requisicao
      */
     public Produto(String nome,
