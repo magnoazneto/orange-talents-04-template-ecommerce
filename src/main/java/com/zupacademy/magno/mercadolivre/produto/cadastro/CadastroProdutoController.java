@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -48,16 +49,15 @@ public class CadastroProdutoController {
         Set<String> links = uploaderFalso.envia(request.getImagens());
         Produto produto = manager.find(Produto.class, id);
 
-        if(produto == null){
-            return ResponseEntity.notFound().build();
-        }
+        if(produto == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado no sistema.");
+
         if(!usuarioLogado.getId().equals(produto.getUsuarioCriador().getId())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário diferente do usuário dono do produto.");
         }
 
         produto.associaLinks(links);
         manager.merge(produto);
 
-        return ResponseEntity.ok(produto.toString());
+        return ResponseEntity.ok().build();
     }
 }

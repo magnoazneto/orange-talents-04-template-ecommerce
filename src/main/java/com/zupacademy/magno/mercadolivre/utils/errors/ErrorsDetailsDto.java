@@ -1,11 +1,15 @@
 package com.zupacademy.magno.mercadolivre.utils.errors;
 
 public class ErrorsDetailsDto {
-    private final String reason;
-    private final String error;
+    private String reason;
+    private String error;
 
     public ErrorsDetailsDto(String reason, String error) {
         this.reason = reason;
+        this.error = error;
+    }
+
+    public ErrorsDetailsDto(String error) {
         this.error = error;
     }
 
