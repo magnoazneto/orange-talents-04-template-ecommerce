@@ -26,6 +26,6 @@ public class CadastroUsuarioController {
     public ResponseEntity<?> criaUsuario(@RequestBody @Valid CadastroUsuarioRequest request){
         Usuario novoUsuario = request.toModel();
         usuarioRepo.save(novoUsuario);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new UsuarioResponse(novoUsuario));
     }
 }
