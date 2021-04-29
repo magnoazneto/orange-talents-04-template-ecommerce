@@ -3,6 +3,8 @@ package com.zupacademy.magno.mercadolivre.produto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProduto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProdutoRequest;
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
+import com.zupacademy.magno.mercadolivre.compra.Compra;
+import com.zupacademy.magno.mercadolivre.compra.StatusCompra;
 import com.zupacademy.magno.mercadolivre.opiniao.Opiniao;
 import com.zupacademy.magno.mercadolivre.pergunta.Pergunta;
 import com.zupacademy.magno.mercadolivre.produto.cadastro.imagens.ImagemProduto;
@@ -46,6 +48,8 @@ public class Produto {
     private Set<Pergunta> perguntas = new HashSet<>();
     @OneToMany(mappedBy = "produto")
     private List<Opiniao> opinioes = new ArrayList<>();
+    @OneToMany(mappedBy = "produto")
+    private List<Compra> compras = new ArrayList<>();
 
     /**
      * Construtor que deve ser usado como padrão
@@ -152,4 +156,19 @@ public class Produto {
                 ", imagens=" + imagens +
                 '}';
     }
+
+    public boolean abaterEstoque(Integer quantidadeCompra) {
+        if (quantidadeCompra > this.quantidade) return false; // fail fast
+
+        int quantidadeReservada = 0;
+        for (Compra compra : this.compras) {
+            if (compra.getStatus().equals(StatusCompra.INICIADA)) {
+                quantidadeReservada += compra.getQuantidade();
+            }
+        }
+        int totalDisponivel = this.quantidade - quantidadeReservada;
+
+        return quantidadeCompra <= totalDisponivel;
+    }
+
 }
