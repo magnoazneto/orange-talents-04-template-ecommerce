@@ -1,9 +1,7 @@
 package com.zupacademy.magno.mercadolivre.utils.email;
 
-import com.zupacademy.magno.mercadolivre.pergunta.Pergunta;
-import com.zupacademy.magno.mercadolivre.produto.Produto;
-import com.zupacademy.magno.mercadolivre.usuario.Usuario;
+import java.util.HashMap;
 
 public interface EmailSenderProvider {
-    public String enviaEmail(Usuario donoProduto, Produto produto, Pergunta pergunta);
+    public boolean enviaEmail(String destinatario, String assunto, String corpo);
 }

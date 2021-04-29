@@ -1,18 +1,21 @@
 package com.zupacademy.magno.mercadolivre.utils.email;
 
-import com.zupacademy.magno.mercadolivre.pergunta.Pergunta;
-import com.zupacademy.magno.mercadolivre.produto.Produto;
-import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
 
 @Component
 @Primary
 public class EnviadorEmail implements EmailSenderProvider {
 
-    public String enviaEmail(Usuario donoProduto, Produto produto, Pergunta pergunta){
-        return donoProduto.getLogin() + ", você recebeu uma nova pergunta no produto " + produto.getNome()
-                + " - Pergunta: \"" + pergunta.getTitulo()
-                + "\" Acesse sua conta para responder!";
+    public boolean enviaEmail(String destinatario, String assunto, String corpo){
+            HashMap<String, String> email = new HashMap<>();
+            email.put("destinatario", destinatario);
+            email.put("assunto", assunto);
+            email.put("mensagem", corpo);
+
+            System.out.println(email);
+            return true;
     }
 }
