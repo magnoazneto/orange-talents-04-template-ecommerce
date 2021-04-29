@@ -1,5 +1,6 @@
-package com.zupacademy.magno.mercadolivre.pergunta;
+package com.zupacademy.magno.mercadolivre.utils.email;
 
+import com.zupacademy.magno.mercadolivre.pergunta.Pergunta;
 import com.zupacademy.magno.mercadolivre.produto.Produto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 

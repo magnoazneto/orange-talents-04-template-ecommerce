@@ -2,6 +2,7 @@ package com.zupacademy.magno.mercadolivre.pergunta;
 
 import com.zupacademy.magno.mercadolivre.produto.Produto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
+import com.zupacademy.magno.mercadolivre.utils.email.EnviadorEmail;
 import com.zupacademy.magno.mercadolivre.utils.validations.ExistsValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
