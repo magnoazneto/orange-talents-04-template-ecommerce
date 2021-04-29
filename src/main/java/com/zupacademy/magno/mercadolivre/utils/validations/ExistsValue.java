@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = ExistsValueValidator.class)
 @Documented
 public @interface ExistsValue {
-    String message() default "{unique.value.violation}";
+    String message() default "{exists.value.violation}";
     // aplicar validacao apenas para grupos especificos
     Class<?>[] groups() default {};
     // mandar informacao a mais para a validacao...
