@@ -7,6 +7,9 @@ import io.jsonwebtoken.lang.Assert;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NovaCompraRequest {
 
@@ -30,6 +33,14 @@ public class NovaCompraRequest {
 
     public String getMetodoPagamento() {
         return metodoPagamento;
+    }
+
+    public boolean metodoPagamentoValido(){
+        Set<String> metodosPagamento = Stream.of(MetodoPagamento.values())
+                .map(MetodoPagamento::name)
+                .collect(Collectors.toSet());
+
+        return metodosPagamento.contains(this.getMetodoPagamento());
     }
 
     public Compra toModel(Produto produto, Usuario comprador) {
