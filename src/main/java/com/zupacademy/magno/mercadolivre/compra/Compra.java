@@ -3,6 +3,7 @@ package com.zupacademy.magno.mercadolivre.compra;
 import com.zupacademy.magno.mercadolivre.compra.gateways.MetodoPagamento;
 import com.zupacademy.magno.mercadolivre.produto.Produto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,15 +16,15 @@ public class Compra {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @GeneratedValue
-    private UUID uuid;
+    private final UUID uuid = UUID.randomUUID();
     @NotNull @ManyToOne
     private Produto produto;
     @NotNull @ManyToOne
     private Usuario comprador;
     @NotNull @Positive
     private Integer quantidade;
-    private StatusCompra status = StatusCompra.INICIADA;
+    @Enumerated(EnumType.STRING)
+    private StatusCompra status;
     @NotNull
     private MetodoPagamento metodoPagamento;
     @NotNull
@@ -43,6 +44,7 @@ public class Compra {
         this.metodoPagamento = gateway;
         this.valorCorrente = valorCorrente;
         this.quantidade = quantidade;
+        this.status = StatusCompra.INICIADA;
     }
 
     public Integer getQuantidade() {
