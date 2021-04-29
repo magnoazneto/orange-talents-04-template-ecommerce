@@ -3,6 +3,8 @@ package com.zupacademy.magno.mercadolivre.produto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProduto;
 import com.zupacademy.magno.mercadolivre.caracteristica.CaracteristicaProdutoRequest;
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
+import com.zupacademy.magno.mercadolivre.opiniao.Opiniao;
+import com.zupacademy.magno.mercadolivre.pergunta.Pergunta;
 import com.zupacademy.magno.mercadolivre.produto.cadastro.imagens.ImagemProduto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import io.jsonwebtoken.lang.Assert;
@@ -11,8 +13,11 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Entity
@@ -37,6 +42,10 @@ public class Produto {
     private Usuario usuarioCriador;
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     private Set<ImagemProduto> imagens = new HashSet<>();
+    @OneToMany(mappedBy = "produto")
+    private Set<Pergunta> perguntas = new HashSet<>();
+    @OneToMany(mappedBy = "produto")
+    private List<Opiniao> opinioes = new ArrayList<>();
 
     /**
      * Construtor que deve ser usado como padrão
@@ -78,6 +87,24 @@ public class Produto {
         Set<ImagemProduto> imagens = links.stream().map(l -> new ImagemProduto(this, l)).collect(Collectors.toSet());
         this.imagens.addAll(imagens);
     }
+
+    public <T> Set<T> mapCaracteristicas(Function<CaracteristicaProduto, T> funcaoMapeadora){
+        return this.caracteristicas.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+    }
+
+    public <T> Set<T> mapImagens(Function<ImagemProduto, T> funcaoMapeadora){
+        return this.imagens.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+    }
+
+    public <T> Set<T> mapPerguntas(Function<Pergunta, T> funcaoMapeadora){
+        return this.perguntas.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+    }
+
+    public <T> List<T> mapOpinioes(Function<Opiniao, T> funcaoMapeadora){
+        return this.opinioes.stream().map(funcaoMapeadora).collect(Collectors.toList());
+    }
+
+
 
     public Long getId() {
         return id;

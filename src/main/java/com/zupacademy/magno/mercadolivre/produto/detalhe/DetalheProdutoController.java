@@ -28,8 +28,8 @@ public class DetalheProdutoController {
                     fieldName = "id",
                     message = "Não existe produto cadastrado com esse Id.") Long id){
 
+        // sem checagem de .isPresent() apenas porque a @ExistsValue já assegura isso
         Optional<Produto> produto = produtoRepository.findById(id);
-
-        return ResponseEntity.ok(new DetalhaProdutoResponse(produto.get(), produtoRepository));
+        return ResponseEntity.ok(new DetalhaProdutoResponse(produto.get()));
     }
 }

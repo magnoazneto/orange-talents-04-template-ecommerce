@@ -25,6 +25,10 @@ public class Opiniao {
     @NotNull @ManyToOne
     private Usuario usuarioOpinador;
 
+    @Deprecated
+    public Opiniao() {
+    }
+
     public Opiniao(@NotBlank String titulo,
                    @NotBlank @Length(max = 500) String descricao,
                    @NotNull Produto produto,
