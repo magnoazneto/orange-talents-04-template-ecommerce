@@ -166,9 +166,12 @@ public class Produto {
                 quantidadeReservada += compra.getQuantidade();
             }
         }
-        int totalDisponivel = this.quantidade - quantidadeReservada;
 
-        return quantidadeCompra <= totalDisponivel;
+        int totalDisponivel = this.quantidade - quantidadeReservada;
+        if (quantidadeCompra > totalDisponivel) return false;
+
+        this.quantidade -= quantidadeCompra;
+        return true;
     }
 
 }

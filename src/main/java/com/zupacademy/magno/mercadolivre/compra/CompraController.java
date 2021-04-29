@@ -2,9 +2,11 @@ package com.zupacademy.magno.mercadolivre.compra;
 
 import com.zupacademy.magno.mercadolivre.produto.Produto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
+import com.zupacademy.magno.mercadolivre.utils.email.EnviadorEmail;
 import com.zupacademy.magno.mercadolivre.utils.validations.ExistsValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 
@@ -15,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping
@@ -24,6 +27,9 @@ public class CompraController {
     @Autowired
     EntityManager manager;
 
+    @Autowired
+    EnviadorEmail enviadorEmail;
+
     @InitBinder
     public void init(WebDataBinder webDataBinder){
         webDataBinder.addValidators(new ProibeMetodoDePagamentoNaoCadastradoValidator());
@@ -31,7 +37,7 @@ public class CompraController {
 
     @PostMapping("/produto/{id}/compra")
     @Transactional
-    public String criaCompra(
+    public ResponseEntity<?> criaCompra(
             @RequestBody @Valid NovaCompraRequest request,
             @AuthenticationPrincipal Usuario comprador,
             @PathVariable @ExistsValue(
@@ -39,15 +45,6 @@ public class CompraController {
                     fieldName = "id",
                     message = "Produto não encontrado para esse ID") Long id
             ){
-
-        /*
-        1 - Recuperar produto OK
-        2 - abater estoque OK
-        3 - identificar gateway OK
-        4 - gerar compra OK
-        5 - enviar email
-        6 - redirecionar
-         */
 
         // existentia de ID validada na @ExistsValue
         Produto produto = manager.find(Produto.class, id);
@@ -58,7 +55,21 @@ public class CompraController {
 
         Compra novaCompra = request.toModel(produto, comprador);
         manager.persist(novaCompra);
-        // enviar email aqui!
-        return novaCompra.toString();
+
+        enviadorEmail.enviaEmail(
+                produto.getUsuarioCriador().getLogin(),
+                "Nova solicitação de compra recebida",
+                "Oi! Seu produto \"" + produto.getNome() +
+                        " acabou de receber uma nova intenção de compra." +
+                        " a quantidade foi de " + novaCompra.getQuantidade().toString() +
+                        " no valor unitário de " + novaCompra.getValorCorrente().toString() +
+                        " pelo usuário: " + comprador.getLogin() +
+                        ". O comprador recebrá um link para realizar o pagamento pelo método escolhido, que nesse caso foi: " +
+                        novaCompra.getMetodoPagamento().toString()
+        );
+
+        // essa urlRetornoProvisoria acredito eu que será implementada na parte 2
+        String redirectUrl = novaCompra.getMetodoPagamento().getGateway().buildUrl(novaCompra.getUuid(), "urlRetornoProvisoria");
+        return ResponseEntity.status(302).body(redirectUrl);
     }
 }

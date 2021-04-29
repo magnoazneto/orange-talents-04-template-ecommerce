@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping
@@ -35,13 +36,16 @@ public class PerguntaController {
         Pergunta novaPergunta = request.toModel(criadorPergunta, produtoAlvo);
 
         manager.persist(novaPergunta);
-        String emailEnviado = enviadorEmail.enviaEmail(
-                produtoAlvo.getUsuarioCriador(),
-                produtoAlvo,
-                novaPergunta
+
+        enviadorEmail.enviaEmail(
+                produtoAlvo.getUsuarioCriador().getLogin(),
+                "Nova pergunta recebida",
+                "você recebeu uma nova pergunta no produto " + produtoAlvo.getNome()
+                + " - Pergunta: " + novaPergunta.getTitulo()
+                + " Acesse sua conta para responder!"
         );
 
-        return ResponseEntity.ok().body(emailEnviado);
+        return ResponseEntity.ok(new PerguntaResponse(novaPergunta, criadorPergunta));
     }
 
 }
