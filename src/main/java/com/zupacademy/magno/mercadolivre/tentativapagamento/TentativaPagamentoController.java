@@ -22,6 +22,15 @@ public class TentativaPagamentoController {
                                            message = "Compra não encontrada para esse ID."
                                    ) Long id){
 
+        /*
+        1 - Recuperar Compra
+        2 - Recuperar meio de pagamento
+        3 - Fazer o match do status da Tentativa recebido com o status padrão do sistema
+        4 - Passar estado da compra para CONCLUIDO se possivel
+        5 - Se sucesso, realizar chamadas para sistemas de NF e ranking
+        6 - Enviar emails para NF e ranking
+        7 - Se falha, enviar email para comprador
+         */
         return "recebendo retorno de pagamento";
     }
 }
