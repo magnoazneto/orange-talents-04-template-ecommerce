@@ -1,6 +1,5 @@
 package com.zupacademy.magno.mercadolivre.compra.gateways;
 
-import com.zupacademy.magno.mercadolivre.compra.StatusCompra;
 import com.zupacademy.magno.mercadolivre.tentativapagamento.StatusTentativa;
 
 import java.util.HashMap;
@@ -23,13 +22,6 @@ public enum MetodoPagamento {
         return gateway;
     }
 
-    @Override
-    public String toString() {
-        return "MetodoPagamento{" +
-                "gateway=" + gateway +
-                '}';
-    }
-
     /**
      *  Avalia uma tentativa de pagamento fazendo um match entre o padrão dos gateways e do sistema
      * @param statusTentativaRecebido o resultado da tentativa de pagamento no padrão do gateway
@@ -37,8 +29,8 @@ public enum MetodoPagamento {
      * @see StatusTentativa
      */
     public boolean avaliaTentativaPagamento(String statusTentativaRecebido) {
-        HashMap<?, StatusTentativa> statusTentativa = this.getGateway().getStatusTentativa();
-        StatusTentativa statusSistema = statusTentativa.get(statusTentativaRecebido);
+        HashMap<?, StatusTentativa> possiveisStatus = this.getGateway().possiveisStatusDoGateway();
+        StatusTentativa statusSistema = possiveisStatus.get(statusTentativaRecebido);
 
         return statusSistema.equals(StatusTentativa.SUCESSO);
     }

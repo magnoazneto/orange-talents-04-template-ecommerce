@@ -21,7 +21,14 @@ public class PagseguroGateway implements GatewayCompra {
     }
 
     @Override
-    public HashMap<?, StatusTentativa> getStatusTentativa() {
+    public HashMap<?, StatusTentativa> possiveisStatusDoGateway() {
         return statusTentativa;
+    }
+
+    @Override
+    public String toString() {
+        return "PagseguroGateway{" +
+                "statusTentativa=" + statusTentativa +
+                '}';
     }
 }

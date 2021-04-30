@@ -27,7 +27,14 @@ public class PaypalGateway implements GatewayCompra {
         return "paypal.com?buyerId={"+ idCompra + "}&redirectUrl={"+urlRetorno+"}";
     }
 
-    public HashMap<?, StatusTentativa> getStatusTentativa() {
+    public HashMap<?, StatusTentativa> possiveisStatusDoGateway() {
         return statusTentativa;
+    }
+
+    @Override
+    public String toString() {
+        return "PaypalGateway{" +
+                "statusTentativa=" + statusTentativa +
+                '}';
     }
 }
