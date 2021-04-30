@@ -2,13 +2,18 @@ package com.zupacademy.magno.mercadolivre.compra;
 
 import com.zupacademy.magno.mercadolivre.compra.gateways.MetodoPagamento;
 import com.zupacademy.magno.mercadolivre.produto.Produto;
+import com.zupacademy.magno.mercadolivre.tentativapagamento.StatusTentativa;
+import com.zupacademy.magno.mercadolivre.tentativapagamento.TentativaPagamento;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +34,8 @@ public class Compra {
     private MetodoPagamento metodoPagamento;
     @NotNull
     private BigDecimal valorCorrente;
+    @OneToMany(mappedBy = "compra")
+    private Set<TentativaPagamento> tentativasPagamento = new HashSet<>();
 
     @Deprecated
     public Compra() {
@@ -75,10 +82,6 @@ public class Compra {
         return status;
     }
 
-    public MetodoPagamento getGateway() {
-        return metodoPagamento;
-    }
-
     public BigDecimal getValorCorrente() {
         return valorCorrente;
     }
@@ -95,5 +98,20 @@ public class Compra {
                 ", metodoPagamento=" + metodoPagamento +
                 ", valorCorrente=" + valorCorrente +
                 '}';
+    }
+
+    /**
+     * Altera um Status de compra para CONCLUIDO
+     * @return True se tudo ocorrer bem. False em caso de falha
+     * @see StatusCompra
+     */
+    public boolean concluirCompra() {
+        for (TentativaPagamento tentativa : tentativasPagamento) {
+            if (tentativa.getStatusTentativa().equals(StatusTentativa.SUCESSO)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O Status da compra informada não pode mais ser alterado.");
+            }
+        }
+
+        return true;
     }
 }
