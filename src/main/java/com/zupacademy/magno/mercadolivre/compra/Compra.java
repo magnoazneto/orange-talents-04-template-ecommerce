@@ -30,7 +30,7 @@ public class Compra {
     private Integer quantidade;
     @Enumerated(EnumType.STRING)
     private StatusCompra status;
-    @NotNull
+    @NotNull @Enumerated(EnumType.STRING)
     private MetodoPagamento metodoPagamento;
     @NotNull
     private BigDecimal valorCorrente;
@@ -101,17 +101,17 @@ public class Compra {
     }
 
     /**
-     * Altera um Status de compra para CONCLUIDO
-     * @return True se tudo ocorrer bem. False em caso de falha
+     * Altera um Status de compra para CONCLUIDO se possível
+     * @throws ResponseStatusException com BAD_REQUEST em caso de falha
      * @see StatusCompra
      */
-    public boolean concluirCompra() {
+    public void concluirCompra() {
         for (TentativaPagamento tentativa : tentativasPagamento) {
             if (tentativa.getStatusTentativa().equals(StatusTentativa.SUCESSO)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O Status da compra informada não pode mais ser alterado.");
             }
         }
 
-        return true;
+        this.status = StatusCompra.CONCLUIDA;
     }
 }
