@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping
@@ -68,8 +67,7 @@ public class CompraController {
                         novaCompra.getMetodoPagamento().toString()
         );
 
-        // essa urlRetornoProvisoria acredito eu que será implementada na parte 2
-        String redirectUrl = novaCompra.getMetodoPagamento().getGateway().buildUrl(novaCompra.getUuid(), "urlRetornoProvisoria");
+        String redirectUrl = novaCompra.getMetodoPagamento().getGateway().buildUrl(novaCompra);
         return ResponseEntity.status(302).body(redirectUrl);
     }
 }
