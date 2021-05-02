@@ -7,6 +7,7 @@ import com.zupacademy.magno.mercadolivre.usuario.cadastro.SenhaLimpa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -93,22 +94,23 @@ class ProdutoTest {
     @Test
     @DisplayName("NAO deve efetuar abate se a quantidade for maior que o estoque")
     public void test04(){ // in point
-        boolean resultadoAbate = produtoPadrao.abaterEstoque(3);
-        assertFalse(resultadoAbate);
+        assertThrows(ResponseStatusException.class, () -> {
+            produtoPadrao.abaterEstoque(3);
+        });
     }
 
     @Test
-    @DisplayName("DEVE efetuar abate se a quantidade for maior que o estoque")
+    @DisplayName("DEVE efetuar abate se a quantidade for menor que o estoque")
     public void test05(){ // off point
-        boolean resultadoAbate = produtoPadrao.abaterEstoque(1);
-        assertTrue(resultadoAbate);
+        produtoPadrao.abaterEstoque(1);
+        assertEquals(1, produtoPadrao.getQuantidade());
     }
 
     @Test
     @DisplayName("DEVE efetuar abate se a quantidade for igual ao estoque")
     public void test06(){
-        boolean resultadoAbate = produtoPadrao.abaterEstoque(2);
-        assertTrue(resultadoAbate);
+        produtoPadrao.abaterEstoque(2);
+        assertEquals(0, produtoPadrao.getQuantidade());
     }
 
 }

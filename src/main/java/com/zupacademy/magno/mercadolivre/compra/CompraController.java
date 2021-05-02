@@ -47,10 +47,7 @@ public class CompraController {
 
         // existentia de ID validada na @ExistsValue
         Produto produto = manager.find(Produto.class, id);
-        boolean estoqueAbatido = produto.abaterEstoque(request.getQuantidade());
-        if(!estoqueAbatido) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantidade inválida para o estoque atual.");
-        }
+        produto.abaterEstoque(request.getQuantidade());
 
         Compra novaCompra = request.toModel(produto, comprador);
         manager.persist(novaCompra);

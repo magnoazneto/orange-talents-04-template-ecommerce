@@ -11,6 +11,8 @@ import com.zupacademy.magno.mercadolivre.produto.cadastro.imagens.ImagemProduto;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import io.jsonwebtoken.lang.Assert;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -157,8 +159,15 @@ public class Produto {
                 '}';
     }
 
-    public boolean abaterEstoque(Integer quantidadeCompra) {
-        if (quantidadeCompra > this.quantidade) return false; // fail fast
+    /**
+     * @throws ResponseStatusException com BAD_REQUEST quando a quantidade for maior que a quantidade disponível
+     * @param quantidadeCompra
+     * @return
+     */
+    public void abaterEstoque(Integer quantidadeCompra) {
+        if (quantidadeCompra > this.quantidade) { // fail fast
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantidade inválida para o estoque atual.");
+        }
 
         int quantidadeReservada = 0;
         for (Compra compra : this.compras) {
@@ -168,10 +177,11 @@ public class Produto {
         }
 
         int totalDisponivel = this.quantidade - quantidadeReservada;
-        if (quantidadeCompra > totalDisponivel) return false;
+        if (quantidadeCompra > totalDisponivel) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantidade inválida para o estoque atual.");
+        }
 
         this.quantidade -= quantidadeCompra;
-        return true;
     }
 
 }
