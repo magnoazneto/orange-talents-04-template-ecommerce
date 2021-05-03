@@ -2,11 +2,13 @@ package com.zupacademy.magno.mercadolivre.caracteristica;
 
 import com.zupacademy.magno.mercadolivre.categoria.Categoria;
 import com.zupacademy.magno.mercadolivre.produto.Produto;
+import com.zupacademy.magno.mercadolivre.produto.cadastro.ProdutoRequest;
 import com.zupacademy.magno.mercadolivre.usuario.Usuario;
 import com.zupacademy.magno.mercadolivre.usuario.cadastro.SenhaLimpa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -20,25 +22,23 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+//@DataJpaTest
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class CaracteristicaProdutoRequestTest {
 
-    @Autowired
-    TestEntityManager testManager;
 
     private Categoria categoria;
     private Usuario usuario;
 
     @BeforeEach
     public void iniSetup(){
-        categoria = new Categoria("TECH");
-        usuario = new Usuario("magno@gmail.com", new SenhaLimpa("123456"));
+        categoria = Mockito.mock(Categoria.class);
+        usuario = Mockito.mock(Usuario.class);
 
     }
 
     @Test
-    @DisplayName("NAO deve receber caracteristicas com nomes iguais")
+    @DisplayName("DEVE detectar caracteristicas com nomes iguais")
     public void test01(){
         Set<CaracteristicaProdutoRequest> caracteristicas = new HashSet<>(Arrays.asList(
                 new CaracteristicaProdutoRequest("marca", "lenovo"),
@@ -46,45 +46,36 @@ class CaracteristicaProdutoRequestTest {
                 new CaracteristicaProdutoRequest("cor", "preto")));
 
 
-        testManager.persistAndFlush(categoria);
-        testManager.persistAndFlush(usuario);
-
-        Produto novoProduto = new Produto(
-                "notebook lenovo",
+        ProdutoRequest novoProduto = new ProdutoRequest( "notebook lenovo",
                 new BigDecimal("2000.0"),
                 1,
                 "um notebook",
-                categoria,
-                caracteristicas,
-                usuario);
+                1L,
+                caracteristicas);
 
-        assertThrows(PersistenceException.class, ()-> {
-                testManager.persist(novoProduto);
-        });
+        Set<String> nomesIguais = novoProduto.buscarCategoriasComNomeIgual();
+        assertEquals(1, nomesIguais.size());
+
     }
 
     @Test
-    @DisplayName("DEVE receber caracteristicas sem nomes iguais")
+    @DisplayName("NAO DEVE detectar caracteristicas com nomes iguais quando nao houver")
     public void test02(){
         Set<CaracteristicaProdutoRequest> caracteristicas = new HashSet<>(Arrays.asList(
                 new CaracteristicaProdutoRequest("marca", "lenovo"),
-                new CaracteristicaProdutoRequest("peso", "200.0"),
+                new CaracteristicaProdutoRequest("peso", "2kg"),
                 new CaracteristicaProdutoRequest("cor", "preto")));
 
-        testManager.persistAndFlush(categoria);
-        testManager.persistAndFlush(usuario);
 
-        Produto novoProduto = new Produto(
-                "notebook lenovo",
+        ProdutoRequest novoProduto = new ProdutoRequest( "notebook lenovo",
                 new BigDecimal("2000.0"),
                 1,
                 "um notebook",
-                categoria,
-                caracteristicas,
-                usuario);
+                1L,
+                caracteristicas);
 
-        Produto produtoSalvo = testManager.persistFlushFind(novoProduto);
-        assertEquals(3, produtoSalvo.getCaracteristicas().size());
+        Set<String> nomesIguais = novoProduto.buscarCategoriasComNomeIgual();
+        assertEquals(0, nomesIguais.size());
+
     }
-
 }
