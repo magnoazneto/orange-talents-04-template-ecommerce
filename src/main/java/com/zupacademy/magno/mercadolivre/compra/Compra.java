@@ -106,9 +106,12 @@ public class Compra {
      * @see StatusCompra
      */
     public void concluirCompra() {
+        if(this.status.equals(StatusCompra.CONCLUIDA)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A compra selecionada já se encontra em status de Concluída.");
+        }
         for (TentativaPagamento tentativa : tentativasPagamento) {
             if (tentativa.getStatusTentativa().equals(StatusTentativa.SUCESSO)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O Status da compra informada não pode mais ser alterado.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Já existe uma tentativa de pagamento bem sucedida associada a essa conta.");
             }
         }
 
