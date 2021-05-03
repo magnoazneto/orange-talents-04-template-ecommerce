@@ -1,6 +1,7 @@
 package com.zupacademy.magno.mercadolivre.tentativapagamento;
 
 import com.zupacademy.magno.mercadolivre.compra.Compra;
+import com.zupacademy.magno.mercadolivre.utils.validations.UniqueValue;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,7 +10,7 @@ public class TentativaPagamentoRequest {
 
     @NotNull
     private Long compraId;
-    @NotBlank
+    @NotBlank @UniqueValue(targetClass = TentativaPagamento.class, fieldName = "pagamento_plataforma_id", message = "Já existe uma tentativa de pagamento com esse Id de plataforma.")
     private String pagamentoPlataformaId;
     @NotBlank
     private String statusTentativa;

@@ -23,12 +23,12 @@ public enum MetodoPagamento {
     }
 
     /**
-     *  Avalia uma tentativa de pagamento fazendo um match entre o padrão dos gateways e do sistema
+     *  Avalia um Status de tentativa com base nos padrões do sistema
      * @param statusTentativaRecebido o resultado da tentativa de pagamento no padrão do gateway
      * @return True se o status recebido corresponder a SUCESSO. False em caso contrário.
      * @see StatusTentativa
      */
-    public boolean avaliaTentativaPagamento(String statusTentativaRecebido) {
+    public boolean tentativaBemSucedida(String statusTentativaRecebido) {
         HashMap<?, StatusTentativa> possiveisStatus = this.getGateway().possiveisStatusDoGateway();
         StatusTentativa statusSistema = possiveisStatus.get(statusTentativaRecebido);
 

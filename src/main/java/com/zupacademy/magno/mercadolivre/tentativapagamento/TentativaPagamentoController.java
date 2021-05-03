@@ -1,12 +1,17 @@
 package com.zupacademy.magno.mercadolivre.tentativapagamento;
 
 import com.zupacademy.magno.mercadolivre.compra.Compra;
+import com.zupacademy.magno.mercadolivre.compra.StatusCompra;
 import com.zupacademy.magno.mercadolivre.compra.gateways.MetodoPagamento;
+import com.zupacademy.magno.mercadolivre.sistemasexternos.NotaFiscalService;
+import com.zupacademy.magno.mercadolivre.sistemasexternos.RankingService;
 import com.zupacademy.magno.mercadolivre.utils.email.EnviadorEmail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -25,6 +30,12 @@ public class TentativaPagamentoController {
     @Autowired
     EntityManager manager;
 
+    @Autowired
+    NotaFiscalService notaFiscalService;
+
+    @Autowired
+    RankingService rankingService;
+
     @InitBinder
     public void init(WebDataBinder webDataBinder){
         webDataBinder.addValidators(proibeStatusTentativaNaoConhecido);
@@ -33,31 +44,23 @@ public class TentativaPagamentoController {
     @PostMapping("/compra/retorno")
     @Transactional
     public ResponseEntity<?> retornaPagamento(@RequestBody @Valid TentativaPagamentoRequest request){
-
-        /*
-        0 - Proteção de borda: o statusCompra da request deve ser válido! OK
-        1 - Recuperar Compra OK
-        2 - Recuperar meio de pagamento OK
-        3 - Fazer o match do status da Tentativa recebido com o status padrão do sistema OK
-        4 - Passar estado da compra para CONCLUIDO se possivel OK
-        5 - Se sucesso, realizar chamadas para sistemas de NF e ranking
-        6 - Enviar emails para NF e ranking
-        7 - Se falha, enviar email para comprador OK
-         */
-
         Compra compra = manager.find(Compra.class, request.getCompraId());
         MetodoPagamento metodoPagamento = compra.getMetodoPagamento();
 
-        if(metodoPagamento.avaliaTentativaPagamento(request.getStatusTentativa())){
+        if(metodoPagamento.tentativaBemSucedida(request.getStatusTentativa())){ // tentativa SUCESSO
             compra.concluirCompra();
-            // realizar chamadas para NF e ranking
-            /*
-            aqui poderia-se realizar as chamadas com o Feign para endpoints fake
-             */
-
-            // enviar email
+            notaFiscalService.processa(compra);
+            rankingService.processa(compra);
+            email.enviaEmail(compra.getProduto().getUsuarioCriador().getLogin(),
+                    "Sua venda foi concluída",
+                    "Olá! Sua venda de id número " + compra.getId().toString()
+                    + " foi concluída com sucesso. A nota fiscal foi gerada e seu ranking atualizado.");
         }
-        else{
+        else{ // tentativa FALHA
+            if(compra.getStatus().equals(StatusCompra.CONCLUIDA)){
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "A tentativa de pagamento deu FALHA, mas essa compra já está marcada como CONCLUÍDA. Não há mais o que se fazer.");
+            }
             String linkPagamento = metodoPagamento.getGateway().buildUrl(compra);
             email.enviaEmail(
                     compra.getComprador().getLogin(),
