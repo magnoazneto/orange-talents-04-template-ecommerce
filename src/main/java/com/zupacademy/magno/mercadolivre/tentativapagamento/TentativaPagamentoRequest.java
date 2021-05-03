@@ -1,6 +1,7 @@
 package com.zupacademy.magno.mercadolivre.tentativapagamento;
 
 import com.zupacademy.magno.mercadolivre.compra.Compra;
+import com.zupacademy.magno.mercadolivre.utils.validations.ExistsValue;
 import com.zupacademy.magno.mercadolivre.utils.validations.UniqueValue;
 
 import javax.validation.constraints.NotBlank;
@@ -8,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 public class TentativaPagamentoRequest {
 
-    @NotNull
+    @NotNull @ExistsValue(targetClass = Compra.class, fieldName = "id", message = "Compra não encontrada.")
     private Long compraId;
     @NotBlank @UniqueValue(targetClass = TentativaPagamento.class, fieldName = "pagamento_plataforma_id", message = "Já existe uma tentativa de pagamento com esse Id de plataforma.")
     private String pagamentoPlataformaId;

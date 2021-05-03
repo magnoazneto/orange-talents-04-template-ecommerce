@@ -1,6 +1,7 @@
 package com.zupacademy.magno.mercadolivre.tentativapagamento;
 
 import com.zupacademy.magno.mercadolivre.compra.Compra;
+import com.zupacademy.magno.mercadolivre.compra.gateways.MetodoPagamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -28,12 +29,13 @@ public class ProibeStatusTentativaNaoConhecido implements Validator {
 
         TentativaPagamentoRequest request = (TentativaPagamentoRequest) target;
 
-        Compra compra = verificaExistenciaDeCompraId(request, errors);
+        Compra compra = recuperaCompra(request, errors);
         if(compra == null) return;
 
         String statusTentativaRecebido = request.getStatusTentativa();
-        HashMap<?, StatusTentativa> statusPossiveis = compra.getMetodoPagamento().getGateway().possiveisStatusDoGateway();
-        if(!statusPossiveis.containsKey(statusTentativaRecebido)){
+        MetodoPagamento metodoPagamento = compra.getMetodoPagamento();
+
+        if(!metodoPagamento.contemStatus(statusTentativaRecebido)){
             errors.rejectValue("statusTentativa",
                     null,
                     "status de compra desconhecido para o método de pagamento: " + compra.getMetodoPagamento().toString());
@@ -41,13 +43,13 @@ public class ProibeStatusTentativaNaoConhecido implements Validator {
 
     }
 
-    private Compra verificaExistenciaDeCompraId(TentativaPagamentoRequest request, Errors errors){
+    private Compra recuperaCompra(TentativaPagamentoRequest request, Errors errors){
         Long compraId = request.getCompraId();
         Query query = manager.createQuery("select c from Compra c where c.id=:pCompraId");
         query.setParameter("pCompraId", compraId);
         List<?> comprasEncontradas = query.getResultList();
 
-        if(comprasEncontradas.isEmpty()){
+        if(comprasEncontradas.isEmpty()){ // proteção extra. Existência do ID já validada na classe de Request
             errors.rejectValue("compraId", null, "Não existe compra no sistema com o id: " + compraId.toString());
             return null;
         }

@@ -34,4 +34,8 @@ public enum MetodoPagamento {
 
         return statusSistema.equals(StatusTentativa.SUCESSO);
     }
+
+    public boolean contemStatus(String statusTentativaRecebido){
+        return gateway.possiveisStatusDoGateway().containsKey(statusTentativaRecebido);
+    }
 }
