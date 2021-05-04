@@ -1,0 +1,36 @@
+version: '3'
+services:
+  springapp:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: mercadorange
+    container_name: springapp
+    ports:
+    - "8080:8080"
+    networks:
+      - orange-test
+    depends_on:
+      - orangedb
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+
+  orangedb:
+    image: mysql
+    container_name: orangedb
+    networks:
+      - orange-test
+    ports:
+    - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mercado_livre
+    expose:
+      - "8080"
+
+
+networks:
+  orange-test:
+    driver: bridge
+    name: orange-test
