@@ -42,15 +42,17 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     // Configuracoes de Autorizacao
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/auth").permitAll()
-                .antMatchers(HttpMethod.POST, "/usuario").permitAll()
-                .antMatchers(HttpMethod.GET, "/produto/{id}").permitAll()
-                .antMatchers(HttpMethod.POST, "/compra/retorno").permitAll()
-                .antMatchers(HttpMethod.POST, "/notas-fiscais").permitAll()
-                .antMatchers(HttpMethod.POST, "/ranking").permitAll()
+        http.csrf().disable()
+                .authorizeRequests()
+                    .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                    .antMatchers(HttpMethod.POST, "/usuario").permitAll()
+                    .antMatchers(HttpMethod.GET, "/produto/{id}").permitAll()
+                    .antMatchers(HttpMethod.POST, "/compra/retorno").permitAll()
+                    .antMatchers(HttpMethod.POST, "/notas-fiscais").permitAll()
+                    .antMatchers(HttpMethod.POST, "/ranking").permitAll()
+                    .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 .anyRequest().authenticated()
-                .and().csrf().disable()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(new AuthTokenFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
     }
