@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       context: .
     image: mercadorange
+    restart: on-failure
     container_name: springapp
     ports:
     - "8080:8080"
